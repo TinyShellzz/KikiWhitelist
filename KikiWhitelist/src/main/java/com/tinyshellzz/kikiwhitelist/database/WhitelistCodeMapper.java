@@ -34,6 +34,8 @@ public class WhitelistCodeMapper {
         } catch (SQLException e) {
             Bukkit.getConsoleSender().sendMessage(ChatColor.RED + e.getClass().getName() + ": " + e.getMessage());
         }
+
+        clear();
     }
 
     public boolean exists_uuid(String mc_uuid){
@@ -66,6 +68,17 @@ public class WhitelistCodeMapper {
         }
 
         return false;
+    }
+
+    public void clear(){
+        Statement stmt = null;
+        try {
+            stmt = conn.createStatement();
+            stmt.executeUpdate("Delete from codes");
+            stmt.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void insert_by_uuid(String mc_uuid, String code, String user_name){
