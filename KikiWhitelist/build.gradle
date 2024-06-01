@@ -1,5 +1,5 @@
 plugins {
-    id 'java'
+    id 'java-library'
 }
 
 group = 'com.tinyshellzz'
@@ -19,6 +19,8 @@ repositories {
 
 dependencies {
     compileOnly "org.spigotmc:spigot-api:1.20.1-R0.1-SNAPSHOT"
+    implementation 'org.yaml:snakeyaml:1.8'
+    implementation 'org.xerial:sqlite-jdbc:3.45.3.0'
 }
 
 def targetJavaVersion = 17
@@ -35,6 +37,10 @@ tasks.withType(JavaCompile).configureEach {
     if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
         options.release = targetJavaVersion
     }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
 }
 
 processResources {

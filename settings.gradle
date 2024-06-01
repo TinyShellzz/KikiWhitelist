@@ -1,1 +1,3 @@
 rootProject.name = 'KikiWhitelist'
+
+include 'KikiWhitelist'
