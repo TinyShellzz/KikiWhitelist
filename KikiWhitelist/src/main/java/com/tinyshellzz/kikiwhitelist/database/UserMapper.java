@@ -15,6 +15,8 @@ public class UserMapper {
     }
 
     public void update_user_name_by_uuid(String mc_uuid, String user_name) {
+        user_name = user_name.toLowerCase();
+
         PreparedStatement stmt = null;
         Connection conn = null;
         ResultSet rs = null;
@@ -66,5 +68,10 @@ public class UserMapper {
         }
 
         return user;
+    }
+
+    public boolean exists_uuid(String mc_uuid){
+        User u = get_user_by_uuid(mc_uuid);
+        return u != null;
     }
 }

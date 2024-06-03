@@ -56,8 +56,7 @@ public class WhitelistCodeMapper {
             stmt = conn.prepareStatement("SELECT * FROM codes WHERE mc_uuid=?");
             stmt.setString(1, mc_uuid);
             rs = stmt.executeQuery();
-            ret = true;
-
+            if(rs.next()) ret = true;
         } catch (SQLException e) {
             Bukkit.getConsoleSender().sendMessage(ChatColor.RED + e.getClass().getName() + ": " + e.getMessage());
         } finally {
@@ -68,7 +67,6 @@ public class WhitelistCodeMapper {
             } catch (SQLException | NullPointerException e) {
             }
         }
-
 
         return ret;
     }
@@ -83,7 +81,7 @@ public class WhitelistCodeMapper {
             stmt = conn.prepareStatement("SELECT * FROM codes WHERE code=?");
             stmt.setString(1, code);
             rs = stmt.executeQuery();
-            ret =  true;
+            if(rs.next()) ret =  true;
         } catch (SQLException e) {
             Bukkit.getConsoleSender().sendMessage(ChatColor.RED + e.getClass().getName() + ": " + e.getMessage());
         } finally {
@@ -121,12 +119,15 @@ public class WhitelistCodeMapper {
     }
 
     public void insert_by_uuid(String mc_uuid, String code, String user_name){
+        user_name = user_name.toLowerCase();
+
         // uuid已存在, 就更新
         if(exists_uuid(mc_uuid)) {
             update_by_uuid(mc_uuid, code, user_name);
             return;
         }
 
+        Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "1");
         PreparedStatement stmt = null;
         Connection conn = null;
         ResultSet rs = null;
@@ -151,6 +152,8 @@ public class WhitelistCodeMapper {
     }
 
     public void update_by_uuid(String mc_uuid, String code, String user_name){
+        user_name = user_name.toLowerCase();
+
         PreparedStatement stmt = null;
         Connection conn = null;
         ResultSet rs = null;
@@ -171,10 +174,11 @@ public class WhitelistCodeMapper {
             } catch (SQLException | NullPointerException e) {
             }
         }
-
     }
 
     public void update_by_code( String mc_uuid, String code, String user_name){
+        user_name = user_name.toLowerCase();
+
         PreparedStatement stmt = null;
         Connection conn = null;
         ResultSet rs = null;
