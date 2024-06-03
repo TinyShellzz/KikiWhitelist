@@ -5,7 +5,7 @@ import com.tinyshellzz.kikiwhitelist.database.WhitelistCodeMapper;
 
 import java.util.Map;
 
-public class GlobalObjects {
+public class ObjectPool {
     public static WhitelistCodeMapper whitelistCodeMapper;
     public static UserMapper usermapper;
     public static Map<Object, Object> config;

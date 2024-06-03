@@ -1,26 +1,23 @@
 package com.tinyshellzz.kikiwhitelist.listener;
 
-import com.tinyshellzz.kikiwhitelist.GlobalObjects;
-import com.tinyshellzz.kikiwhitelist.KIkiWhitelist;
+import com.tinyshellzz.kikiwhitelist.ObjectPool;
 import com.tinyshellzz.kikiwhitelist.config.Config;
-import com.tinyshellzz.kikiwhitelist.database.UserMapper;
 import com.tinyshellzz.kikiwhitelist.database.WhitelistCodeMapper;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 
-import java.io.File;
 import java.util.UUID;
 
 public class PlayerLoginListener implements Listener {
-    private WhitelistCodeMapper mapper = GlobalObjects.whitelistCodeMapper;
+    private WhitelistCodeMapper mapper = ObjectPool.whitelistCodeMapper;
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerLogin(PlayerLoginEvent event) throws InterruptedException {
         // 在白名单中, 就直接允许
         if(event.getPlayer().isWhitelisted()){
-            if(GlobalObjects.usermapper != null) GlobalObjects.usermapper.update_user_name_by_uuid(event.getPlayer().getUniqueId().toString(), event.getPlayer().getDisplayName());
+            if(ObjectPool.usermapper != null) ObjectPool.usermapper.update_user_name_by_uuid(event.getPlayer().getUniqueId().toString(), event.getPlayer().getDisplayName());
 
             event.allow();
         } else {

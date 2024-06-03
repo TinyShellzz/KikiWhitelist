@@ -1,6 +1,6 @@
 package com.tinyshellzz.kikiwhitelist.config;
 
-import com.tinyshellzz.kikiwhitelist.GlobalObjects;
+import com.tinyshellzz.kikiwhitelist.ObjectPool;
 import com.tinyshellzz.kikiwhitelist.KIkiWhitelist;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -11,7 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
 public class Config {
-    private static KIkiWhitelist plugin = GlobalObjects.plugin;
+    private static KIkiWhitelist plugin = ObjectPool.plugin;
 
     public static HashMap<Object, Object> config;
 
@@ -46,7 +46,7 @@ public class Config {
             config.put((Object) "user-db", (Object) "D:/Learning/Python/Python/03_高级/QQ_nonebot/kiki_projects_for_TCC/user.db");
         }
 
-        GlobalObjects.config = config;
+        ObjectPool.config = config;
         return config;
     }
 
