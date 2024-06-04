@@ -2,6 +2,7 @@ package com.tinyshellzz.kikiwhitelist.config;
 
 import com.tinyshellzz.kikiwhitelist.ObjectPool;
 import com.tinyshellzz.kikiwhitelist.KIkiWhitelist;
+import com.tinyshellzz.kikiwhitelist.database.UserMapper;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.yaml.snakeyaml.Yaml;
@@ -47,10 +48,27 @@ public class Config {
         }
 
         ObjectPool.config = config;
+        connect_db();
         return config;
     }
 
     public static String get(String key) {
         return (String) config.get((Object) key);
+    }
+
+    public static void connect_db(){
+        // 加载数据库
+        try {
+            String str = Config.get("user-db");
+            File user_db = new File(str);
+            if (user_db.exists()) {
+                ObjectPool.usermapper = new UserMapper(user_db);
+            } else {
+                throw new NullPointerException();
+            }
+        } catch (NullPointerException e) {
+            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "user.db 配置错误");
+            throw new NullPointerException();
+        }
     }
 }

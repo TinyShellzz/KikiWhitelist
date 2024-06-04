@@ -37,20 +37,6 @@ public final class KIkiWhitelist extends JavaPlugin {
         Config.loadConfig();
 
         ObjectPool.whitelistCodeMapper = new WhitelistCodeMapper();
-
-        // 加载数据库
-        try {
-            String str = Config.get("user-db");
-            File user_db = new File(str);
-            if (user_db.exists()) {
-                ObjectPool.usermapper = new UserMapper(user_db);
-            } else {
-                throw new NullPointerException();
-            }
-        } catch (NullPointerException e) {
-            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "user.db 配置错误");
-            throw new NullPointerException();
-        }
     }
 
     public void register(){

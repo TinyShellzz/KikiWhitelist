@@ -27,11 +27,13 @@ public class WhitelistCodeMapper {
             stmt.executeUpdate("CREATE TABLE codes (" +
                                 "mc_uuid text," +
                                 "code text," +
-                                "user_name text" +
+                                "user_name text," +
+                                "display_name text" +
                                 ")");
 
             stmt.executeUpdate("CREATE UNIQUE INDEX code_index on codes (code);");
             stmt.executeUpdate("CREATE UNIQUE INDEX uuid_index on codes (mc_uuid);");
+            stmt.executeUpdate("CREATE INDEX user_name on codes (mc_uuid);");
         } catch (SQLException e) {
             Bukkit.getConsoleSender().sendMessage(ChatColor.RED + e.getClass().getName() + ": " + e.getMessage());
         } finally {
@@ -118,12 +120,12 @@ public class WhitelistCodeMapper {
 
     }
 
-    public void insert_by_uuid(String mc_uuid, String code, String user_name){
+    public void insert_by_uuid(String mc_uuid, String code, String user_name, String display_name){
         user_name = user_name.toLowerCase();
 
         // uuid已存在, 就更新
         if(exists_uuid(mc_uuid)) {
-            update_by_uuid(mc_uuid, code, user_name);
+            update_by_uuid(mc_uuid, code, user_name, display_name);
             return;
         }
 
@@ -133,10 +135,11 @@ public class WhitelistCodeMapper {
         ResultSet rs = null;
         try {
             conn = DriverManager.getConnection(code_db);
-            stmt = conn.prepareStatement("INSERT INTO codes VALUES (?, ?, ?)");
+            stmt = conn.prepareStatement("INSERT INTO codes VALUES (?, ?, ?, ?)");
             stmt.setString(1, mc_uuid);
             stmt.setString(2, code);
             stmt.setString(3, user_name);
+            stmt.setString(4, display_name);
             stmt.executeUpdate();
         } catch (SQLException e) {
             Bukkit.getConsoleSender().sendMessage(ChatColor.RED + e.getClass().getName() + ": " + e.getMessage());
@@ -151,7 +154,7 @@ public class WhitelistCodeMapper {
 
     }
 
-    public void update_by_uuid(String mc_uuid, String code, String user_name){
+    public void update_by_uuid(String mc_uuid, String code, String user_name, String display_name){
         user_name = user_name.toLowerCase();
 
         PreparedStatement stmt = null;
@@ -159,10 +162,11 @@ public class WhitelistCodeMapper {
         ResultSet rs = null;
         try {
             conn = DriverManager.getConnection(code_db);
-            stmt = conn.prepareStatement("UPDATE codes SET code=?, user_name=? WHERE mc_uuid=?");
+            stmt = conn.prepareStatement("UPDATE codes SET code=?, user_name=?, display_name=? WHERE mc_uuid=?");
             stmt.setString(1, code);
             stmt.setString(2, user_name);
-            stmt.setString(3, mc_uuid);
+            stmt.setString(3, display_name);
+            stmt.setString(4, mc_uuid);
             stmt.executeUpdate();
         } catch (SQLException e) {
             Bukkit.getConsoleSender().sendMessage(ChatColor.RED + e.getClass().getName() + ": " + e.getMessage());

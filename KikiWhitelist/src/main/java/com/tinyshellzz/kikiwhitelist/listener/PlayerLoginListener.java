@@ -21,14 +21,15 @@ public class PlayerLoginListener implements Listener {
     public void onPlayerLogin(PlayerLoginEvent event) {
         boolean whitelisted = false;
         String mc_uuid = event.getPlayer().getUniqueId().toString();
+        String user_name = event.getPlayer().getDisplayName();
 
         if(usermapper.exists_uuid(mc_uuid)){
-            if(ObjectPool.usermapper != null) ObjectPool.usermapper.update_user_name_by_uuid(event.getPlayer().getUniqueId().toString(), event.getPlayer().getDisplayName());
+            if(ObjectPool.usermapper != null) ObjectPool.usermapper.update_user_name_by_uuid(mc_uuid, user_name, user_name);
 
             User user = usermapper.get_user_by_uuid(mc_uuid);
             if(user.whitelisted != null) {
                 whitelisted = true;
-                event.allow();
+                // event.allow();   ban 功能会失效
             }
         }
 
@@ -38,9 +39,7 @@ public class PlayerLoginListener implements Listener {
             while(codemapper.exists_code(code)){
                 code = UUID.randomUUID().toString().substring(0, 6);
             }
-
-            String user_name = event.getPlayer().getDisplayName();
-            codemapper.insert_by_uuid(mc_uuid, code, user_name);
+            codemapper.insert_by_uuid(mc_uuid, code, user_name, user_name);
 
             // 如果不在白名单中, 就发送验证码要求
             event.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, String.format("你不在白名单中, 请在群输入: \n%s%s", Config.get("code-prefix"), code));
