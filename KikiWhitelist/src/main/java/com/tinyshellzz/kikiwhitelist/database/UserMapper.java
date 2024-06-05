@@ -1,5 +1,6 @@
 package com.tinyshellzz.kikiwhitelist.database;
 
+import com.tinyshellzz.kikiwhitelist.tools.Tools;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
@@ -44,6 +45,32 @@ public class UserMapper {
         }
     }
 
+    public void update_login_time_by_uuid(String mc_uuid) {
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        ResultSet rs = null;
+        try {
+            conn = DriverManager.getConnection(user_db);
+            User user = get_user_by_uuid(mc_uuid);
+            if (user != null) {
+                stmt = conn.prepareStatement("UPDATE users SET last_login_time=? WHERE mc_uuid=?");
+                stmt.setString(1, Tools.get_current_time());
+                stmt.setString(2, mc_uuid);
+                stmt.executeUpdate();
+            }
+
+        } catch (SQLException e) {
+            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + e.getClass().getName() + ": " + e.getMessage());
+        } finally {
+            try {
+                stmt.close();
+                rs.close();
+                conn.close();
+            } catch (SQLException | NullPointerException e) {
+            }
+        }
+    }
+
     public User get_user_by_uuid(String mc_uuid) {
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -55,7 +82,7 @@ public class UserMapper {
             stmt.setString(1, mc_uuid);
             rs = stmt.executeQuery();
             if(rs.next()) {
-                user =  new User(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6));
+                user =  new User(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7));
             }
         } catch (SQLException e) {
             Bukkit.getConsoleSender().sendMessage(ChatColor.RED + e.getClass().getName() + ": " + e.getMessage());

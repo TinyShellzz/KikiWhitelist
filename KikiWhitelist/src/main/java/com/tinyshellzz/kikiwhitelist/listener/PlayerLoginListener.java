@@ -27,8 +27,9 @@ public class PlayerLoginListener implements Listener {
             if(ObjectPool.usermapper != null) ObjectPool.usermapper.update_user_name_by_uuid(mc_uuid, user_name, user_name);
 
             User user = usermapper.get_user_by_uuid(mc_uuid);
-            if(user.whitelisted != null) {
+            if(user.whitelisted != null && !user.whitelisted.equals("false")) {
                 whitelisted = true;
+                usermapper.update_login_time_by_uuid(mc_uuid);
                 // event.allow();   ban 功能会失效
             }
         }
