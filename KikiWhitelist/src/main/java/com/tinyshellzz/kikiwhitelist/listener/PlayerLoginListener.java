@@ -5,6 +5,7 @@ import com.tinyshellzz.kikiwhitelist.config.Config;
 import com.tinyshellzz.kikiwhitelist.database.User;
 import com.tinyshellzz.kikiwhitelist.database.UserMapper;
 import com.tinyshellzz.kikiwhitelist.database.WhitelistCodeMapper;
+import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -43,7 +44,16 @@ public class PlayerLoginListener implements Listener {
             codemapper.insert_by_uuid(mc_uuid, code, user_name, user_name);
 
             // 如果不在白名单中, 就发送验证码要求
-            event.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, String.format("你不在白名单中, 请在群输入: \n%s%s", Config.get("code-prefix"), code));
+            String kickMessage = ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD.toString() +
+                    "============================Tcc============================\n      \n" +
+                    ChatColor.WHITE.toString() + ChatColor.BOLD.toString() + "你的游戏账号还没有绑定QQ哦\n" +
+                    ChatColor.WHITE.toString() + ChatColor.BOLD.toString() + "请在Tcc大群内输入以下内容进行绑定!\n" +
+                    ChatColor.WHITE.toString() + ChatColor.BOLD.toString() + "请在群内输入:   " +
+                    ChatColor.AQUA.toString() + ChatColor.BOLD.toString() + Config.get("code-prefix") + code + "\n      \n" +
+                    ChatColor.RED.toString() + ChatColor.BOLD.toString() + "在群内绑定完毕后返回游戏重新连接服务器即可\n      \n" +
+                    ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD.toString() + "============================Tcc============================";
+
+            event.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, kickMessage);
         }
     }
 }
