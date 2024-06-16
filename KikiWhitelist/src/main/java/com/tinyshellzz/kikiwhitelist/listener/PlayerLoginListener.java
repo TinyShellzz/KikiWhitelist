@@ -28,10 +28,16 @@ public class PlayerLoginListener implements Listener {
             if(ObjectPool.usermapper != null) ObjectPool.usermapper.update_user_name_by_uuid(mc_uuid, user_name, user_name);
 
             User user = usermapper.get_user_by_uuid(mc_uuid);
-            if(user.whitelisted != null && user.whitelisted.equals("true")) {
-                whitelisted = true;
-                usermapper.update_login_time_by_uuid(mc_uuid);
-                // event.allow();   ban 功能会失效
+            if(user.whitelisted != null) {
+                if(user.whitelisted.equals("ban")) {
+                    String banMessage = "你已被封禁";
+                    event.disallow(PlayerLoginEvent.Result.KICK_BANNED, banMessage);
+                }
+                else if(user.whitelisted.equals("true")) {
+                    whitelisted = true;
+                    usermapper.update_login_time_by_uuid(mc_uuid);
+                    // event.allow();   ban 功能会失效
+                }
             }
         }
 
