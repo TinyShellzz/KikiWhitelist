@@ -30,8 +30,7 @@ public class PlayerLoginListener implements Listener {
             User user = usermapper.get_user_by_uuid(mc_uuid);
             if(user.whitelisted != null) {
                 if(user.whitelisted.equals("ban")) {
-                    String banMessage = "你已被封禁";
-                    event.disallow(PlayerLoginEvent.Result.KICK_BANNED, banMessage);
+                    // 封禁通知
                 }
                 else if(user.whitelisted.equals("true")) {
                     whitelisted = true;
