@@ -7,12 +7,14 @@ import org.bukkit.ChatColor;
 import java.io.File;
 import java.sql.*;
 
+import static com.tinyshellzz.kikiwhitelist.ObjectPool.config;
+
 public class UserMapper {
 
-    String user_db;
+    String database;
 
-    public UserMapper(File fpath){
-        user_db = String.format("jdbc:sqlite:%s", fpath);
+    public UserMapper(){
+        database = String.format("jdbc:mysql://%s:%s/%s", config.get("db_host"), config.get("3306"), config.get("db_database"));
     }
 
     public void update_user_name_by_uuid(String mc_uuid, String user_name, String display_name) {
@@ -22,7 +24,7 @@ public class UserMapper {
         Connection conn = null;
         ResultSet rs = null;
         try {
-            conn = DriverManager.getConnection(user_db);
+            conn = DriverManager.getConnection(database);
             User user = get_user_by_uuid(mc_uuid);
             if (!(user == null || user.user_name.equals(user_name))) {
 
@@ -50,7 +52,7 @@ public class UserMapper {
         Connection conn = null;
         ResultSet rs = null;
         try {
-            conn = DriverManager.getConnection(user_db);
+            conn = DriverManager.getConnection(database);
             User user = get_user_by_uuid(mc_uuid);
             if (user != null) {
                 stmt = conn.prepareStatement("UPDATE users SET last_login_time=? WHERE mc_uuid=?");
@@ -77,7 +79,8 @@ public class UserMapper {
         ResultSet rs = null;
         User user = null;
         try {
-            conn = DriverManager.getConnection(user_db);
+            conn = DriverManager.getConnection(database);
+            conn.commit();
             stmt = conn.prepareStatement("SELECT * FROM users WHERE mc_uuid=?");
             stmt.setString(1, mc_uuid);
             rs = stmt.executeQuery();

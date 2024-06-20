@@ -36,6 +36,7 @@ public class WhitelistCodeMapper {
             stmt.executeUpdate("CREATE UNIQUE INDEX code_index on codes (code);");
             stmt.executeUpdate("CREATE UNIQUE INDEX uuid_index on codes (mc_uuid);");
             stmt.executeUpdate("CREATE INDEX user_name on codes (user_name);");
+            conn.commit();
         } catch (SQLException e) {
             Bukkit.getConsoleSender().sendMessage(ChatColor.RED + e.getClass().getName() + ": " + e.getMessage());
         } finally {
