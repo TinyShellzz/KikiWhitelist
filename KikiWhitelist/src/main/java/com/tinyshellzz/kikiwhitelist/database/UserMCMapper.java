@@ -1,22 +1,15 @@
 package com.tinyshellzz.kikiwhitelist.database;
 
+import com.tinyshellzz.kikiwhitelist.config.Config;
 import com.tinyshellzz.kikiwhitelist.tools.Tools;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
-import java.io.File;
 import java.sql.*;
 
 import static com.tinyshellzz.kikiwhitelist.ObjectPool.config;
 
-public class UserMapper {
-
-    String database;
-
-    public UserMapper(){
-        database = String.format("jdbc:mysql://%s:%s/%s", config.get("db_host"), config.get("3306"), config.get("db_database"));
-    }
-
+public class UserMCMapper {
     public void update_user_name_by_uuid(String mc_uuid, String user_name, String display_name) {
         user_name = user_name.toLowerCase();
 
@@ -24,25 +17,25 @@ public class UserMapper {
         Connection conn = null;
         ResultSet rs = null;
         try {
-            conn = DriverManager.getConnection(database);
-            User user = get_user_by_uuid(mc_uuid);
+            conn = Config.connect();
+            MCUser user = get_user_by_uuid(mc_uuid);
             if (!(user == null || user.user_name.equals(user_name))) {
 
-                stmt = conn.prepareStatement("UPDATE users SET user_name=?, display_name=? WHERE mc_uuid=?");
+                stmt = conn.prepareStatement("UPDATE users_mc SET user_name=?, display_name=? WHERE mc_uuid=?");
                 stmt.setString(1, user_name);
                 stmt.setString(2, display_name);
                 stmt.setString(3, mc_uuid);
                 stmt.executeUpdate();
             }
-
+            conn.commit();
         } catch (SQLException e) {
-            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + e.getClass().getName() + ": " + e.getMessage());
+            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "UserMCMapper.update_user_name_by_uuid: " + e.getMessage());
         } finally {
             try {
-                stmt.close();
-                rs.close();
-                conn.close();
-            } catch (SQLException | NullPointerException e) {
+                if(stmt != null) stmt.close();
+                if(rs != null) rs.close();
+                if(conn != null) conn.close();
+            } catch (SQLException e) {
             }
         }
     }
@@ -52,49 +45,49 @@ public class UserMapper {
         Connection conn = null;
         ResultSet rs = null;
         try {
-            conn = DriverManager.getConnection(database);
-            User user = get_user_by_uuid(mc_uuid);
+            conn = Config.connect();
+            MCUser user = get_user_by_uuid(mc_uuid);
             if (user != null) {
-                stmt = conn.prepareStatement("UPDATE users SET last_login_time=? WHERE mc_uuid=?");
+                stmt = conn.prepareStatement("UPDATE users_mc SET last_login_time=? WHERE mc_uuid=?");
                 stmt.setString(1, Tools.get_current_time());
                 stmt.setString(2, mc_uuid);
                 stmt.executeUpdate();
             }
-
+            conn.commit();
         } catch (SQLException e) {
-            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + e.getClass().getName() + ": " + e.getMessage());
+            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "UserMCMapper.update_login_time_by_uuid:"  + e.getMessage());
         } finally {
             try {
-                stmt.close();
-                rs.close();
-                conn.close();
-            } catch (SQLException | NullPointerException e) {
+                if(stmt != null) stmt.close();
+                if(rs != null) rs.close();
+                if(conn != null) conn.close();
+            } catch (SQLException e) {
             }
         }
     }
 
-    public User get_user_by_uuid(String mc_uuid) {
+    public MCUser get_user_by_uuid(String mc_uuid) {
         PreparedStatement stmt = null;
         Connection conn = null;
         ResultSet rs = null;
-        User user = null;
+        MCUser user = null;
         try {
-            conn = DriverManager.getConnection(database);
+            conn = Config.connect();
             conn.commit();
-            stmt = conn.prepareStatement("SELECT * FROM users WHERE mc_uuid=?");
+            stmt = conn.prepareStatement("SELECT * FROM users_mc WHERE mc_uuid=?");
             stmt.setString(1, mc_uuid);
             rs = stmt.executeQuery();
             if(rs.next()) {
-                user =  new User(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7));
+                user =  new MCUser(rs.getLong(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7));
             }
         } catch (SQLException e) {
-            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + e.getClass().getName() + ": " + e.getMessage());
+            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "UserMCMapper.get_user_by_uuid:" + e.getMessage());
         } finally {
             try {
-                stmt.close();
-                rs.close();
-                conn.close();
-            } catch (SQLException | NullPointerException e) {
+                if(stmt != null) stmt.close();
+                if(rs != null) rs.close();
+                if(conn != null) conn.close();
+            } catch (SQLException e) {
             }
         }
 
@@ -102,7 +95,36 @@ public class UserMapper {
     }
 
     public boolean exists_uuid(String mc_uuid){
-        User u = get_user_by_uuid(mc_uuid);
+        MCUser u = get_user_by_uuid(mc_uuid);
         return u != null;
+    }
+
+    public boolean exists_whitelist(long id){
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        ResultSet rs = null;
+        MCUser user = null;
+        boolean ret = false;
+        try {
+            conn = Config.connect();
+            conn.commit();
+            stmt = conn.prepareStatement("SELECT * FROM whitelist WHERE id=?");
+            stmt.setLong(1, id);
+            rs = stmt.executeQuery();
+            if(rs.next()) {
+                ret = true;
+            }
+        } catch (SQLException e) {
+            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "UserMCMapper.exists_whitelist:" + e.getMessage());
+        } finally {
+            try {
+                if(stmt != null) stmt.close();
+                if(rs != null) rs.close();
+                if(conn != null) conn.close();
+            } catch (SQLException e) {
+            }
+        }
+
+        return ret;
     }
 }

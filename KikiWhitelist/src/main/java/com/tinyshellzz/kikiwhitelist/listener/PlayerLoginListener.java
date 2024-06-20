@@ -2,41 +2,52 @@ package com.tinyshellzz.kikiwhitelist.listener;
 
 import com.tinyshellzz.kikiwhitelist.ObjectPool;
 import com.tinyshellzz.kikiwhitelist.config.Config;
-import com.tinyshellzz.kikiwhitelist.database.User;
-import com.tinyshellzz.kikiwhitelist.database.UserMapper;
-import com.tinyshellzz.kikiwhitelist.database.WhitelistCodeMapper;
+import com.tinyshellzz.kikiwhitelist.database.BanlistUser;
+import com.tinyshellzz.kikiwhitelist.database.MCUser;
+import com.tinyshellzz.kikiwhitelist.database.UserMCMapper;
+import com.tinyshellzz.kikiwhitelist.database.CodeMCMapper;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
-public class PlayerLoginListener implements Listener {
-    private WhitelistCodeMapper codemapper = ObjectPool.whitelistCodeMapper;
+import static com.tinyshellzz.kikiwhitelist.ObjectPool.banlistMapper;
 
-    private UserMapper usermapper = ObjectPool.usermapper;
+public class PlayerLoginListener implements Listener {
+    private CodeMCMapper codemapper = ObjectPool.codeMCMapper;
+
+    private UserMCMapper userMCMapper = ObjectPool.userMCMapper;
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerLogin(PlayerLoginEvent event) {
         boolean whitelisted = false;
-        String mc_uuid = event.getPlayer().getUniqueId().toString();
+        String mc_uuid = event.getPlayer().getUniqueId().toString().replace("-", "");
         String user_name = event.getPlayer().getDisplayName();
+        if(banlistMapper.exists_uuid(mc_uuid)) {
+            BanlistUser b_user = banlistMapper.get_user_by_uuid(mc_uuid);
+            LocalDateTime now = LocalDateTime.now();
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            String now_str = dateTimeFormatter.format(now);
+            if (now_str.compareTo(b_user.unban_date) < 0) {
+                event.disallow(PlayerLoginEvent.Result.KICK_BANNED, "你已被封禁: " + b_user.reason + "\n 解封时间: " + b_user.unban_date);
+            }
+        }
 
-        if(usermapper.exists_uuid(mc_uuid)){
-            if(ObjectPool.usermapper != null) ObjectPool.usermapper.update_user_name_by_uuid(mc_uuid, user_name, user_name);
+        if(userMCMapper.exists_uuid(mc_uuid)){
+            userMCMapper.update_user_name_by_uuid(mc_uuid, user_name, user_name);
 
-            User user = usermapper.get_user_by_uuid(mc_uuid);
-            if(user.whitelisted != null) {
-                if(user.whitelisted.equals("ban")) {
-                    // 封禁通知
-                }
-                else if(user.whitelisted.equals("true")) {
+            MCUser user = userMCMapper.get_user_by_uuid(mc_uuid);
+            Bukkit.getConsoleSender().sendMessage(" " + user.id);
+            if(userMCMapper.exists_whitelist(user.id)) {
                     whitelisted = true;
-                    usermapper.update_login_time_by_uuid(mc_uuid);
+                    userMCMapper.update_login_time_by_uuid(mc_uuid);
                     // event.allow();   ban 功能会失效
-                }
             }
         }
 

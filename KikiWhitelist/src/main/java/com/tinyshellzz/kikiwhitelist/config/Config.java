@@ -2,13 +2,15 @@ package com.tinyshellzz.kikiwhitelist.config;
 
 import com.tinyshellzz.kikiwhitelist.ObjectPool;
 import com.tinyshellzz.kikiwhitelist.KIkiWhitelist;
-import com.tinyshellzz.kikiwhitelist.database.UserMapper;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.HashMap;
 
 public class Config {
@@ -33,7 +35,10 @@ public class Config {
             File dir = plugin.getDataFolder();
             if(!dir.exists()) dir.mkdirs();
 
-            String str = "code-prefix: '我是爱坤我不是小黑子'\nuser-db: 'D:/Learning/Python/Python/03_高级/QQ_nonebot/kiki_projects_for_TCC/user.db'";
+            String str = "code-prefix: \"我是爱坤我不是小黑子\"\ndb_host: \"localhost\"      # mysql地址\n" +
+                    "db_user: \"root\"           # mysql用户名\n" +
+                    "db_passwd: \"anyingis21\"   # mysql密码\n" +
+                    "db_database: \"TCC\"        # 所用数据库";
             try {
                 BufferedWriter writer = new BufferedWriter(new FileWriter(new File(dir, "config.yml"), StandardCharsets.UTF_8));
                 writer.append(str);
@@ -44,11 +49,13 @@ public class Config {
 
             config = new HashMap<>();
             config.put((Object) "code-prefix", (Object) "我是爱坤我不是小黑子");
-            config.put((Object) "user-db", (Object) "D:/Learning/Python/Python/03_高级/QQ_nonebot/kiki_projects_for_TCC/user.db");
+            config.put((Object) "db_host", (Object) "localhost");
+            config.put((Object) "db_user", (Object) "root");
+            config.put((Object) "db_passwd", (Object) "anyingis21");
+            config.put((Object) "db_database", (Object) "TCC");
         }
 
         ObjectPool.config = config;
-        connect_db();
         return config;
     }
 
@@ -56,19 +63,10 @@ public class Config {
         return (String) config.get((Object) key);
     }
 
-    public static void connect_db(){
-        // 加载数据库
-        try {
-            String str = Config.get("user-db");
-            File user_db = new File(str);
-            if (user_db.exists()) {
-                ObjectPool.usermapper = new UserMapper(user_db);
-            } else {
-                throw new NullPointerException();
-            }
-        } catch (NullPointerException e) {
-            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "user.db 配置错误");
-            throw new NullPointerException();
-        }
+    public static Connection connect() throws SQLException {
+        String database = String.format("jdbc:mysql://%s:%s/%s", config.get("db_host"), "3306", config.get("db_database"));
+        Connection conn = DriverManager.getConnection(database, config.get("db_user").toString(), config.get("db_passwd").toString());
+        conn.setAutoCommit(false);
+        return conn;
     }
 }

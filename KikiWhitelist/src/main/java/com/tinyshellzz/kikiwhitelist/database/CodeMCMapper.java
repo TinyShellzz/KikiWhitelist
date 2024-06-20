@@ -1,5 +1,6 @@
 package com.tinyshellzz.kikiwhitelist.database;
 
+import com.tinyshellzz.kikiwhitelist.config.Config;
 import com.tinyshellzz.kikiwhitelist.tools.Tools;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -7,47 +8,11 @@ import org.bukkit.ChatColor;
 import java.io.File;
 import java.sql.*;
 
+import static com.tinyshellzz.kikiwhitelist.ObjectPool.config;
 import static com.tinyshellzz.kikiwhitelist.ObjectPool.plugin;
 
-public class WhitelistCodeMapper {
-    private String code_db;
-
-    public WhitelistCodeMapper(){
-        // 连接数据库
-        File dir = plugin.getDataFolder();
-        File db_file = new File(dir, "code.db");
-        code_db = String.format("jdbc:sqlite:%s", db_file);
-
-        Statement stmt = null;
-        Connection conn = null;
-        ResultSet rs = null;
-        try {
-            conn = DriverManager.getConnection(code_db);
-
-            stmt = conn.createStatement();
-            stmt.executeUpdate("CREATE TABLE codes (" +
-                                "mc_uuid text," +
-                                "code text," +
-                                "user_name text," +
-                                "display_name text," +
-                                "last_login_time text" +
-                                ")");
-
-            stmt.executeUpdate("CREATE UNIQUE INDEX code_index on codes (code);");
-            stmt.executeUpdate("CREATE UNIQUE INDEX uuid_index on codes (mc_uuid);");
-            stmt.executeUpdate("CREATE INDEX user_name on codes (user_name);");
-            conn.commit();
-        } catch (SQLException e) {
-            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + e.getClass().getName() + ": " + e.getMessage());
-        } finally {
-            try {
-                stmt.close();
-                rs.close();
-                conn.close();
-            } catch (SQLException | NullPointerException e) {
-            }
-        }
-
+public class CodeMCMapper {
+    public CodeMCMapper(){
         clear();
     }
 
@@ -57,8 +22,9 @@ public class WhitelistCodeMapper {
         ResultSet rs = null;
         boolean ret = false;
         try {
-            conn = DriverManager.getConnection(code_db);
-            stmt = conn.prepareStatement("SELECT * FROM codes WHERE mc_uuid=?");
+            conn = Config.connect();
+            conn.commit();
+            stmt = conn.prepareStatement("SELECT * FROM codes_mc WHERE mc_uuid=?");
             stmt.setString(1, mc_uuid);
             rs = stmt.executeQuery();
             if(rs.next()) ret = true;
@@ -66,10 +32,10 @@ public class WhitelistCodeMapper {
             Bukkit.getConsoleSender().sendMessage(ChatColor.RED + e.getClass().getName() + ": " + e.getMessage());
         } finally {
             try {
-                stmt.close();
-                rs.close();
-                conn.close();
-            } catch (SQLException | NullPointerException e) {
+                if(stmt != null) stmt.close();
+                if(rs != null) rs.close();
+                if(conn != null) conn.close();
+            } catch (SQLException e) {
             }
         }
 
@@ -82,8 +48,9 @@ public class WhitelistCodeMapper {
         ResultSet rs = null;
         boolean ret = false;
         try {
-            conn = DriverManager.getConnection(code_db);
-            stmt = conn.prepareStatement("SELECT * FROM codes WHERE code=?");
+            conn = Config.connect();
+            conn.commit();
+            stmt = conn.prepareStatement("SELECT * FROM codes_mc WHERE code=?");
             stmt.setString(1, code);
             rs = stmt.executeQuery();
             if(rs.next()) ret =  true;
@@ -91,10 +58,10 @@ public class WhitelistCodeMapper {
             Bukkit.getConsoleSender().sendMessage(ChatColor.RED + e.getClass().getName() + ": " + e.getMessage());
         } finally {
             try {
-                stmt.close();
-                rs.close();
-                conn.close();
-            } catch (SQLException | NullPointerException e) {
+                if(stmt != null) stmt.close();
+                if(rs != null) rs.close();
+                if(conn != null) conn.close();
+            } catch (SQLException e) {
             }
         }
 
@@ -107,17 +74,18 @@ public class WhitelistCodeMapper {
         Connection conn = null;
         ResultSet rs = null;
         try {
-            conn = DriverManager.getConnection(code_db);
+            conn = Config.connect();
             stmt = conn.createStatement();
-            stmt.executeUpdate("Delete from codes");
+            stmt.executeUpdate("Delete from codes_mc");
+            conn.commit();
         } catch (SQLException e) {
             Bukkit.getConsoleSender().sendMessage(ChatColor.RED + e.getClass().getName() + ": " + e.getMessage());
         } finally {
             try {
-                stmt.close();
-                rs.close();
-                conn.close();
-            } catch (SQLException | NullPointerException e) {
+                if(stmt != null) stmt.close();
+                if(rs != null) rs.close();
+                if(conn != null) conn.close();
+            } catch (SQLException e) {
             }
         }
 
@@ -132,27 +100,26 @@ public class WhitelistCodeMapper {
             return;
         }
 
-        Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "1");
         PreparedStatement stmt = null;
         Connection conn = null;
         ResultSet rs = null;
         try {
-            conn = DriverManager.getConnection(code_db);
-            stmt = conn.prepareStatement("INSERT INTO codes VALUES (?, ?, ?, ?, ?)");
-            stmt.setString(1, mc_uuid);
-            stmt.setString(2, code);
-            stmt.setString(3, user_name);
-            stmt.setString(4, display_name);
-            stmt.setString(5, Tools.get_current_time());
+            conn = Config.connect();
+            stmt = conn.prepareStatement("INSERT INTO codes_mc VALUES (?, ?, ?, ?)");
+            stmt.setString(1, code);
+            stmt.setString(2, user_name);
+            stmt.setString(3, display_name);
+            stmt.setString(4, mc_uuid);
             stmt.executeUpdate();
+            conn.commit();
         } catch (SQLException e) {
             Bukkit.getConsoleSender().sendMessage(ChatColor.RED + e.getClass().getName() + ": " + e.getMessage());
         } finally {
             try {
-                stmt.close();
-                rs.close();
-                conn.close();
-            } catch (SQLException | NullPointerException e) {
+                if(stmt != null) stmt.close();
+                if(rs != null) rs.close();
+                if(conn != null) conn.close();
+            } catch (SQLException e) {
             }
         }
 
@@ -165,22 +132,22 @@ public class WhitelistCodeMapper {
         Connection conn = null;
         ResultSet rs = null;
         try {
-            conn = DriverManager.getConnection(code_db);
-            stmt = conn.prepareStatement("UPDATE codes SET code=?, user_name=?, display_name=?, last_login_time=? WHERE mc_uuid=?");
+            conn = Config.connect();
+            stmt = conn.prepareStatement("UPDATE codes_mc SET code=?, user_name=?, display_name=? WHERE mc_uuid=?");
             stmt.setString(1, code);
             stmt.setString(2, user_name);
             stmt.setString(3, display_name);
-            stmt.setString(4, Tools.get_current_time());
-            stmt.setString(5, mc_uuid);
+            stmt.setString(4, mc_uuid);
             stmt.executeUpdate();
+            conn.commit();
         } catch (SQLException e) {
             Bukkit.getConsoleSender().sendMessage(ChatColor.RED + e.getClass().getName() + ": " + e.getMessage());
         } finally {
             try {
-                stmt.close();
-                rs.close();
-                conn.close();
-            } catch (SQLException | NullPointerException e) {
+                if(stmt != null) stmt.close();
+                if(rs != null) rs.close();
+                if(conn != null) conn.close();
+            } catch (SQLException e) {
             }
         }
     }
@@ -192,21 +159,21 @@ public class WhitelistCodeMapper {
         Connection conn = null;
         ResultSet rs = null;
         try {
-            conn = DriverManager.getConnection(code_db);
-            stmt = conn.prepareStatement("UPDATE codes SET mc_uuid=?, user_name=?, last_login_time=? WHERE code=?");
+            conn = Config.connect();
+            stmt = conn.prepareStatement("UPDATE codes_mc SET mc_uuid=?, user_name=? WHERE code=?");
             stmt.setString(1, mc_uuid);
             stmt.setString(2, user_name);
-            stmt.setString(3, Tools.get_current_time());
-            stmt.setString(4, code);
+            stmt.setString(3, code);
             stmt.executeUpdate();
+            conn.commit();
         } catch (SQLException e) {
             Bukkit.getConsoleSender().sendMessage(ChatColor.RED + e.getClass().getName() + ": " + e.getMessage());
         } finally {
             try {
-                stmt.close();
-                rs.close();
-                conn.close();
-            } catch (SQLException | NullPointerException e) {
+                if(stmt != null) stmt.close();
+                if(rs != null) rs.close();
+                if(conn != null) conn.close();
+            } catch (SQLException e) {
             }
         }
 

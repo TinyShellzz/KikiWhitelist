@@ -6,4 +6,10 @@ folia-supported: true
 commands:
   kiki:
     description: KikiWhitelist plugin management
-    permission: kiki.use
+    permission: op
+  iban:
+    description: KikiWhitelist ban command
+    permission: op
+  iunban:
+    description: KikiWhitelist iunban command
+    permission: op
