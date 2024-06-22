@@ -45,7 +45,7 @@ public class Tools {
         StringBuffer responseContent = new StringBuffer();
         HttpURLConnection conn;
 
-        URL _url = new URL("https://api.mojang.com/users/profiles/minecraft/tinyshellzzz?");
+        URL _url = new URL(url);
         conn = (HttpURLConnection) _url.openConnection();
 
         // Request setup

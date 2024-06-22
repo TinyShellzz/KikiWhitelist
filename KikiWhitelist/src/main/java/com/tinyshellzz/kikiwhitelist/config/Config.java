@@ -36,6 +36,7 @@ public class Config {
             if(!dir.exists()) dir.mkdirs();
 
             String str = "code-prefix: \"我是爱坤我不是小黑子\"\ndb_host: \"localhost\"      # mysql地址\n" +
+                    "db_port: 3306               # mysql端口\n" +
                     "db_user: \"root\"           # mysql用户名\n" +
                     "db_passwd: \"anyingis21\"   # mysql密码\n" +
                     "db_database: \"TCC\"        # 所用数据库";
@@ -50,6 +51,7 @@ public class Config {
             config = new HashMap<>();
             config.put((Object) "code-prefix", (Object) "我是爱坤我不是小黑子");
             config.put((Object) "db_host", (Object) "localhost");
+            config.put((Object) "db_port", (Object) "3306");
             config.put((Object) "db_user", (Object) "root");
             config.put((Object) "db_passwd", (Object) "anyingis21");
             config.put((Object) "db_database", (Object) "TCC");
@@ -60,11 +62,11 @@ public class Config {
     }
 
     public static String get(String key) {
-        return (String) config.get((Object) key);
+        return config.get((Object) key).toString();
     }
 
     public static Connection connect() throws SQLException {
-        String database = String.format("jdbc:mysql://%s:%s/%s", config.get("db_host"), "3306", config.get("db_database"));
+        String database = String.format("jdbc:mysql://%s:%s/%s", config.get("db_host"), config.get("db_port"), config.get("db_database"));
         Connection conn = DriverManager.getConnection(database, config.get("db_user").toString(), config.get("db_passwd").toString());
         conn.setAutoCommit(false);
         return conn;
