@@ -1,0 +1,34 @@
+tcc_server:
+  ==: org.bukkit.inventory.ItemStack
+  v: 3839
+  type: COMMAND_BLOCK
+  meta:
+    ==: ItemMeta
+    meta-type: TILE_ENTITY
+    item-name: '"TCC服务器"'
+    lore:
+      - '{"text":"破烂","italic":false,"color":"white"}'
+      - '{"text":"虽然这玩意无论如何看起来都是个土豆的样子，","italic":false,"color":"gray"}'
+      - '{"text":"但你确信,它是,或者说,曾经是一个Minecraft服务器。","italic":false,"color":"gray"}'
+      - '{"text":"来源","italic":false,"color":"yellow"}'
+      - '{"text":"服务器崩溃后在机房获得","italic":false,"color":"aqua"}'
+    custom-model-data: 40900004
+    fire-resistant: true
+    food:
+      ==: Food
+      nutrition: 2
+      saturation: 1.2
+      can-always-eat: true
+      eat-seconds: 1.6
+      effects:
+        - ==: FoodEffect
+          effect:
+            ==: PotionEffect
+            effect: minecraft:poison
+            duration: 200
+            amplifier: 1
+            ambient: false
+            has-particles: true
+            has-icon: true
+          probability: 1.0
+    blockMaterial: COMMAND_BLOCK
