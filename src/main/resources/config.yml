@@ -1,0 +1,11 @@
+code_prefix: "我是爱坤我不是小黑子"
+# mysql地址
+db_host: "localhost"
+# mysql端口
+db_port: 3360
+# mysql用户名
+db_user: "tcc"
+# mysql密码
+db_passwd: "TccServer2024@"
+# 所用数据库
+db_database: "tcc"

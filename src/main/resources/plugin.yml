@@ -1,0 +1,20 @@
+name: KikiWhitelist
+version: '${version}'
+main: com.tinyshellzz.kikiwhitelist.KIkiWhitelist
+api-version: '1.20'
+folia-supported: true
+commands:
+  kiki:
+    description: KikiWhitelist plugin management
+    default: false
+
+  iban:
+    description: KikiWhitelist iban command
+    usage: /iban <name> <time> <remark>
+    # "default: true" for everyone
+    # or use "permission: kiki.iban", and you can set "permission-message: ..."
+    default: true
+  iunban:
+    description: KikiWhitelist iunban command
+    usage: /iunban <name>
+    default: true
