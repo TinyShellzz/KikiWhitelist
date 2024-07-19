@@ -7,7 +7,6 @@ commands:
   kiki:
     description: KikiWhitelist plugin management
     default: false
-
   iban:
     description: KikiWhitelist iban command
     usage: /iban <name> <time> <remark>
@@ -17,4 +16,8 @@ commands:
   iunban:
     description: KikiWhitelist iunban command
     usage: /iunban <name>
+    default: true
+  sign:
+    description: daly sign in command
+    usage: /sign <code>
     default: true

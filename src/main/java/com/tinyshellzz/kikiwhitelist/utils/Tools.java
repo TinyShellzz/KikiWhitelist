@@ -1,6 +1,5 @@
-package com.tinyshellzz.kikiwhitelist.tools;
+package com.tinyshellzz.kikiwhitelist.utils;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -12,7 +11,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 
 public class Tools {
     public static String get_current_time() {

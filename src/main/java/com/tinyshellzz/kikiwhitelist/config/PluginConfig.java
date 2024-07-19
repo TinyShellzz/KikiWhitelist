@@ -2,9 +2,16 @@ package com.tinyshellzz.kikiwhitelist.config;
 
 
 import com.tinyshellzz.kikiwhitelist.ObjectPool;
+import com.tinyshellzz.kikiwhitelist.sign.GiftList;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.inventory.ItemStack;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 import static com.tinyshellzz.kikiwhitelist.ObjectPool.plugin;
 
@@ -17,8 +24,11 @@ public class PluginConfig {
     public String db_database;
 
     private static ConfigWrapper configWrapper = new ConfigWrapper(plugin, "config.yml");
+
     public static void reload() {
         configWrapper.reloadConfig(); // 重新加载配置文件
+        ItemStackManager.reload();
+        GiftList.reload();
 
         YamlConfiguration config = configWrapper.getConfig();
         ObjectPool.pluginConfig = new PluginConfig();
@@ -41,4 +51,5 @@ public class PluginConfig {
                 ", db_database='" + db_database + '\'' +
                 '}';
     }
+
 }

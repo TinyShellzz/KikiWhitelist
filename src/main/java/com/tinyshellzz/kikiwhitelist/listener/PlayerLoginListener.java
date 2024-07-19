@@ -2,16 +2,19 @@ package com.tinyshellzz.kikiwhitelist.listener;
 
 import com.tinyshellzz.kikiwhitelist.ObjectPool;
 import com.tinyshellzz.kikiwhitelist.config.DBConfig;
+import com.tinyshellzz.kikiwhitelist.config.ItemStackManager;
 import com.tinyshellzz.kikiwhitelist.database.BanlistUser;
 import com.tinyshellzz.kikiwhitelist.database.MCUser;
 import com.tinyshellzz.kikiwhitelist.database.UserMCMapper;
 import com.tinyshellzz.kikiwhitelist.database.CodeMCMapper;
+import net.md_5.bungee.api.chat.hover.content.Item;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.inventory.ItemStack;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -46,9 +49,9 @@ public class PlayerLoginListener implements Listener {
             MCUser user = userMCMapper.get_user_by_uuid(mc_uuid);
             Bukkit.getConsoleSender().sendMessage(" " + user.id);
             if(userMCMapper.exists_whitelist(user.id)) {
-                    whitelisted = true;
-                    userMCMapper.update_login_time_by_uuid(mc_uuid);
-                    // event.allow();   ban 功能会失效
+                whitelisted = true;
+                userMCMapper.update_login_time_by_uuid(mc_uuid);
+                // event.allow();   ban 功能会失效
             }
         }
 

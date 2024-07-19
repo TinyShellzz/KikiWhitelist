@@ -1,7 +1,7 @@
 package com.tinyshellzz.kikiwhitelist.database;
 
 import com.tinyshellzz.kikiwhitelist.config.DBConfig;
-import com.tinyshellzz.kikiwhitelist.tools.Tools;
+import com.tinyshellzz.kikiwhitelist.utils.Tools;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 

@@ -5,6 +5,7 @@ import com.tinyshellzz.kikiwhitelist.database.BanlistMapper;
 import com.tinyshellzz.kikiwhitelist.database.InvitationMapper;
 import com.tinyshellzz.kikiwhitelist.database.UserMCMapper;
 import com.tinyshellzz.kikiwhitelist.database.CodeMCMapper;
+import com.tinyshellzz.kikiwhitelist.sign.SignMapper;
 
 import java.util.Map;
 
@@ -14,6 +15,8 @@ public class ObjectPool {
     public static BanlistMapper banlistMapper;
 
     public static InvitationMapper invitationMapper;
+
+    public static SignMapper signMapper;
     public static Map<Object, Object> config;
     public static KIkiWhitelist plugin;
     public static PluginConfig pluginConfig;

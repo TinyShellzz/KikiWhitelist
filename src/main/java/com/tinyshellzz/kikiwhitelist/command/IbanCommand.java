@@ -2,16 +2,13 @@ package com.tinyshellzz.kikiwhitelist.command;
 
 import com.tinyshellzz.kikiwhitelist.database.BanlistUser;
 import com.tinyshellzz.kikiwhitelist.database.MCUser;
-import com.tinyshellzz.kikiwhitelist.database.UserMCMapper;
-import com.tinyshellzz.kikiwhitelist.tools.Tools;
+import com.tinyshellzz.kikiwhitelist.utils.Tools;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
-import org.bukkit.event.server.RemoteServerCommandEvent;
 import org.bukkit.plugin.Plugin;
-import org.slf4j.helpers.NOPLogger;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
