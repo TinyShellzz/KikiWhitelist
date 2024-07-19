@@ -35,7 +35,7 @@ public class PlayerLoginListener implements Listener {
             LocalDateTime now = LocalDateTime.now();
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             String now_str = dateTimeFormatter.format(now);
-            if (now_str.compareTo(b_user.unban_date) < 0) {
+            if (b_user != null && now_str.compareTo(b_user.unban_date) < 0) {
                 event.disallow(PlayerLoginEvent.Result.KICK_BANNED, "你已被封禁: " + b_user.reason + "\n 解封时间: " + b_user.unban_date);
             }
         }
