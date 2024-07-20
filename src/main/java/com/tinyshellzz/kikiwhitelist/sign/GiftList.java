@@ -39,10 +39,11 @@ public class GiftList {
         List<String> rews = rewords.get(day);
         for(String item: rews) {
             int amount = 0;
-            Pattern r = Pattern.compile("[xX]([0-9]{1,2})$");
+            Pattern r = Pattern.compile("(.*?)[xX]([0-9]{1,2})$");
             Matcher m = r.matcher(item);
             if(m.find()){
-                amount = Integer.parseInt(m.group(1));
+                amount = Integer.parseInt(m.group(2));
+                item = m.group(1);
             }
 
             if(item.equals("random")) {
