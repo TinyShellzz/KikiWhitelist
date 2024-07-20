@@ -12,6 +12,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.io.Serializable;
 import java.lang.constant.Constable;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.tinyshellzz.kikiwhitelist.ObjectPool.plugin;
 import static java.util.Map.entry;
@@ -36,22 +38,29 @@ public class GiftList {
 
         List<String> rews = rewords.get(day);
         for(String item: rews) {
-            Bukkit.getConsoleSender().sendMessage("==================attempt git gift " + item);
+            int amount = 0;
+            Pattern r = Pattern.compile("[xX]([0-9]{1,2})$");
+            Matcher m = r.matcher(item);
+            if(m.find()){
+                amount = Integer.parseInt(m.group(1));
+            }
+
             if(item.equals("random")) {
-                gifts.add(getRandomGift());
+                ItemStack randomGift = getRandomGift();
+                randomGift.setAmount(amount);
+                gifts.add(randomGift);
                 continue;
             }
 
-            Material m = itemList.get(item);
-            if(m != null) {
-                Bukkit.getConsoleSender().sendMessage("==================add gift ===================");
-                gifts.add(new ItemStack(m));
+            Material material = itemList.get(item.toUpperCase());
+            if(material != null) {
+                gifts.add(new ItemStack(material, amount));
                 continue;
             }
 
             ItemStack i = ItemStackManager.getItem(item);
             if(i != null) {
-                Bukkit.getConsoleSender().sendMessage("==================add gift===================");
+                i.setAmount(amount);
                 gifts.add(i);
             }
         }
@@ -94,10 +103,38 @@ public class GiftList {
     private static List<String> keys = new ArrayList<>();
     static {
         itemList = new HashMap<>();
-        itemList.put("potato", Material.POTATO);
+        itemList.put("ANVIL", Material.ANVIL);
+        itemList.put("APPLE", Material.APPLE);
+        itemList.put("ARROW", Material.ARROW);
+        itemList.put("BAMBOO", Material.BAMBOO);
+        itemList.put("BARREL", Material.BARREL);
+        itemList.put("BEACON", Material.BEACON);
+        itemList.put("BEEF", Material.BEEF);
+        itemList.put("BEE_NEST", Material.BEE_NEST);
+        itemList.put("BELL", Material.BELL);
+        itemList.put("BIRCH_LOG", Material.BIRCH_LOG);
+        itemList.put("BOOK", Material.BOOK);
+        itemList.put("BOOKSHELF", Material.BOOKSHELF);
+        itemList.put("BOW", Material.BOW);
+        itemList.put("BOWL", Material.BOWL);
+        itemList.put("BUCKET", Material.BUCKET);
         itemList.put("CAKE", Material.CAKE);
         itemList.put("CHEST", Material.CHEST);
         itemList.put("CLAY", Material.CLAY);
+        itemList.put("CLOCK", Material.CLOCK);
+        itemList.put("COMPASS", Material.COMPASS);
+        itemList.put("POTATO", Material.POTATO);
+
+        // 有价值的物品
+        itemList.put("DIAMOND", Material.DIAMOND);
+        itemList.put("DIAMOND_ORE", Material.DIAMOND_ORE);
+        itemList.put("ELYTRA", Material.ELYTRA);
+        // 下届合金
+        itemList.put("ANCIENT_DEBRIS", Material.ANCIENT_DEBRIS);
+        itemList.put("NETHERITE_BLOCK", Material.NETHERITE_BLOCK);
+        itemList.put("NETHERITE_SCRAP", Material.NETHERITE_SCRAP);
+        itemList.put("NETHERITE_INGOT", Material.NETHERITE_INGOT);
+
 
         keys.addAll(itemList.keySet());
     }
