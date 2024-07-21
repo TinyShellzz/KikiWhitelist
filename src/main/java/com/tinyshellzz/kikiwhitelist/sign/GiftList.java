@@ -117,9 +117,6 @@ public class GiftList {
                 List<String> re = (List) config.get(itemKey);
                 if (re != null) {
                     rewords.get(i).addAll(re);
-                    for (String s : rewords.get(i)) {
-                        Bukkit.getConsoleSender().sendMessage(i + ": " + s);
-                    }
                 }
             }
         }
@@ -168,7 +165,14 @@ public class GiftList {
         itemKeys = new ArrayList<>();
         itemKeys.addAll(itemList.keySet());
         customItemKeys = new ArrayList<>();
-        customItemKeys.addAll(ItemStackManager.itemMap.keySet());
+        Set<String> strings = ItemStackManager.itemMap.keySet();
+        customItemKeys = new ArrayList<>();
+        // 排除/rewards save 保存的物品
+        Pattern r = Pattern.compile("^month_[0-9]{1,2}.*_[0-9]{1,2}$");
+        for(String k: strings) {
+            Matcher m = r.matcher(k);
+            if(!m.find()) customItemKeys.add(k);
+        }
     }
 
     private static HashMap<String, Material> itemList;

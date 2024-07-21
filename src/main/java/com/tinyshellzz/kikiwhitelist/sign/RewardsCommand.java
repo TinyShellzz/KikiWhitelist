@@ -84,7 +84,7 @@ public class RewardsCommand  implements TabExecutor {
         for(ItemStack itemStack: contents) {
             if(itemStack != null) {
                 String s = itemStack.getType().toString();
-                String item_name = day + "_" + s + i++;
+                String item_name = "month_" + day + "_" + s + i++;
 
                 ItemStackManager.save(item_name, itemStack);
                 items.add(item_name);
