@@ -17,7 +17,6 @@ public class ObjectPool {
     public static InvitationMapper invitationMapper;
 
     public static SignMapper signMapper;
-    public static Map<Object, Object> config;
     public static KIkiWhitelist plugin;
     public static PluginConfig pluginConfig;
 }

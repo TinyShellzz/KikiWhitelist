@@ -11,3 +11,4 @@ db_passwd: "TccServer2024@"
 db_database: "tcc"
 # true是随机黑名单模式, false是随机白名单模式.
 gift_blacklist: true
+blacklist_pattern: "^(.*_SPAWN_EGG|INFESTED_.*)\$"

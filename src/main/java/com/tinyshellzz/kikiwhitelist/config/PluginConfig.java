@@ -23,6 +23,7 @@ public class PluginConfig {
     public String db_passwd;
     public String db_database;
     public boolean gift_blacklist = false;
+    public String blacklist_pattern;
 
     private static ConfigWrapper configWrapper = new ConfigWrapper(plugin, "config.yml");
 
@@ -39,7 +40,8 @@ public class PluginConfig {
         config.db_passwd = yamlconfig.getString("db_passwd");
         config.db_database = yamlconfig.getString("db_database");
         config.gift_blacklist = Boolean.parseBoolean(yamlconfig.getString("gift_blacklist"));
-
+        config.blacklist_pattern = yamlconfig.getString("blacklist_pattern");
+        Bukkit.getConsoleSender().sendMessage("blacklist_pattern: " + config.blacklist_pattern);
 
         ItemStackManager.reload();
         GiftList.reload();

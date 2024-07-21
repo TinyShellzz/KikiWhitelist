@@ -3,6 +3,7 @@ package com.tinyshellzz.kikiwhitelist.sign;
 import com.tinyshellzz.kikiwhitelist.ObjectPool;
 import com.tinyshellzz.kikiwhitelist.config.ConfigWrapper;
 import com.tinyshellzz.kikiwhitelist.config.ItemStackManager;
+import com.tinyshellzz.kikiwhitelist.config.PluginConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.MemorySection;
@@ -17,6 +18,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.tinyshellzz.kikiwhitelist.ObjectPool.plugin;
+import static com.tinyshellzz.kikiwhitelist.ObjectPool.pluginConfig;
 
 public class GiftList {
     static  List<List<String>> rewords = new ArrayList<>();
@@ -127,7 +129,8 @@ public class GiftList {
         try (BufferedReader br = new BufferedReader(new FileReader(new File(plugin.getDataFolder(), "sign_in/giftlist.txt")))) {
             String line;
             while ((line = br.readLine()) != null) {
-                giftlist.add(line.strip().toUpperCase());
+                String strip = line.strip();
+                if(strip != "") giftlist.add(strip.toUpperCase());
             }
         } catch (IOException e) {
         }
@@ -143,8 +146,17 @@ public class GiftList {
                     boolean gift_blacklist = ObjectPool.pluginConfig.gift_blacklist;
                     if((gift_blacklist && !giftlist.contains(field_name)) || (!gift_blacklist && giftlist.contains(field_name))) {
                         if (o instanceof Material && !field_name.startsWith("LEGACY_")) {
-                            Material material = (Material) o;
-                            itemList.put(field_name, material);
+                            if(pluginConfig.blacklist_pattern != null && gift_blacklist) {
+                                Pattern r = Pattern.compile(pluginConfig.blacklist_pattern);
+                                Matcher m = r.matcher(field_name);
+                                if(!m.find()) {
+                                    Material material = (Material) o;
+                                    itemList.put(field_name, material);
+                                }
+                            } else {
+                                Material material = (Material) o;
+                                itemList.put(field_name, material);
+                            }
                         }
                     }
                 } catch (IllegalAccessException e) {
