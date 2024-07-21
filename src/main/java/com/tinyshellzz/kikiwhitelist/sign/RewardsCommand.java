@@ -80,10 +80,11 @@ public class RewardsCommand  implements TabExecutor {
         }
 
         List<String> items = new ArrayList<>();
+        int i = 1;
         for(ItemStack itemStack: contents) {
             if(itemStack != null) {
                 String s = itemStack.getType().toString();
-                String item_name = day + "_" + s;
+                String item_name = day + "_" + s + i++;
 
                 ItemStackManager.save(item_name, itemStack);
                 items.add(item_name);
