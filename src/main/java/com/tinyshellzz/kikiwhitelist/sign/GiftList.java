@@ -25,7 +25,7 @@ public class GiftList {
             rewords.add(new ArrayList<>());
         }
     }
-    private static ConfigWrapper configWrapper = new ConfigWrapper(plugin, "sign_in/rewords.yml");
+    public static ConfigWrapper configWrapper = new ConfigWrapper(plugin, "sign_in/rewords.yml");
     static {
         plugin.saveResource("sign_in/giftlist.txt", false);
     }
@@ -36,12 +36,13 @@ public class GiftList {
      * @return
      */
     public static List<ItemStack> getGift(int day) {
-        Bukkit.getConsoleSender().sendMessage("==================getGift===================");
+
         List<ItemStack> gifts = new ArrayList<>();
 
         List<String> rews = rewords.get(day);
         for(String item: rews) {
-            int amount = 1;
+            Bukkit.getConsoleSender().sendMessage("==================getGift: " + item);
+            int amount = 0;
             Pattern r = Pattern.compile("^(.*)[xX]([0-9]{1,2})$");
             Matcher m = r.matcher(item);
             if(m.find()){
@@ -51,7 +52,7 @@ public class GiftList {
 
             if(item.equals("random")) {
                 ItemStack randomGift = getRandomGift();
-                randomGift.setAmount(amount);
+                if(amount != 0) randomGift.setAmount(amount);
                 gifts.add(randomGift);
                 continue;
             }
@@ -62,16 +63,18 @@ public class GiftList {
                 if(o instanceof Material) {
                     material = (Material) o;
                 }
-            } catch (IllegalAccessException | NoSuchFieldException e) {
+            } catch (IllegalAccessException | NoSuchFieldException ignored) {
             }
             if(material != null) {
-                gifts.add(new ItemStack(material, amount));
+                ItemStack itemStack = new ItemStack(material);
+                if(amount != 0) itemStack.setAmount(amount);
+                gifts.add(itemStack);
                 continue;
             }
 
             ItemStack i = ItemStackManager.getItem(item);
             if(i != null) {
-                i.setAmount(amount);
+                if(amount != 0) i.setAmount(amount);
                 gifts.add(i);
             }
         }
@@ -105,18 +108,19 @@ public class GiftList {
         }
         YamlConfiguration config = configWrapper.getConfig();
 
-        MemorySection month = (MemorySection)config.get("month");
-        for(Integer i = 1; i < 32 ; i += 1) {
-
-            List<String> re = (List)month.get(i.toString());
-            if(re != null) {
-                rewords.get(i).addAll(re);
-                for(String s: rewords.get(i)) {
-                    Bukkit.getConsoleSender().sendMessage(i + ": " + s);
+        Set<String> itemKeySet = config.getKeys(false);
+        for (String itemKey : itemKeySet) {
+            int i = Integer.parseInt(itemKey);
+            if (i < 32) {
+                List<String> re = (List) config.get(itemKey);
+                if (re != null) {
+                    rewords.get(i).addAll(re);
+                    for (String s : rewords.get(i)) {
+                        Bukkit.getConsoleSender().sendMessage(i + ": " + s);
+                    }
                 }
             }
         }
-
 
         Set<String> giftlist = new HashSet<>();;
 

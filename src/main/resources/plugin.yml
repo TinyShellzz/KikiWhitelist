@@ -21,3 +21,8 @@ commands:
     description: daly sign in command
     usage: /sign <code>
     default: true
+  rewards:
+    description: daly sign in command rewards
+    usage: /rewards save <day>
+    default: false
+    permission: kiki.use

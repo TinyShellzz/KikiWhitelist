@@ -12,6 +12,7 @@ import com.tinyshellzz.kikiwhitelist.database.UserMCMapper;
 import com.tinyshellzz.kikiwhitelist.listener.PlayerJoinListener;
 import com.tinyshellzz.kikiwhitelist.listener.PlayerLoginListener;
 import com.tinyshellzz.kikiwhitelist.listener.PlayerQuitListener;
+import com.tinyshellzz.kikiwhitelist.sign.RewardsCommand;
 import com.tinyshellzz.kikiwhitelist.sign.SignCommand;
 import com.tinyshellzz.kikiwhitelist.sign.SignMapper;
 import org.bukkit.Bukkit;
@@ -64,5 +65,6 @@ public final class KIkiWhitelist extends JavaPlugin {
         // 注册 iunban 命令
         this.getCommand("iunban").setExecutor(new IunbanCommand(this));
         this.getCommand("sign").setExecutor(new SignCommand());
+        this.getCommand("rewards").setExecutor(new RewardsCommand());
     }
 }
