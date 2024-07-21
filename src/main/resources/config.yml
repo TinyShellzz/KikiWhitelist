@@ -9,3 +9,5 @@ db_user: "tcc"
 db_passwd: "TccServer2024@"
 # 所用数据库
 db_database: "tcc"
+# true是随机黑名单模式, false是随机白名单模式.
+gift_blacklist: true

@@ -13,7 +13,7 @@ import java.util.Set;
 import static com.tinyshellzz.kikiwhitelist.ObjectPool.plugin;
 
 public class ItemStackManager {
-    private static final Map<String, ItemStack> itemMap = new HashMap<>();
+    public static final Map<String, ItemStack> itemMap = new HashMap<>();
 
     public static void save(String itemName, ItemStack item) {
         ConfigWrapper configWrapper = new ConfigWrapper(plugin, "items/" + itemName + ".yml");

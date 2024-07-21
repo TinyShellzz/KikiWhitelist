@@ -1,5 +1,6 @@
 package com.tinyshellzz.kikiwhitelist.sign;
 
+import com.tinyshellzz.kikiwhitelist.ObjectPool;
 import com.tinyshellzz.kikiwhitelist.config.ConfigWrapper;
 import com.tinyshellzz.kikiwhitelist.config.ItemStackManager;
 import org.bukkit.Bukkit;
@@ -7,16 +8,15 @@ import org.bukkit.Material;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
-import java.io.Serializable;
-import java.lang.constant.Constable;
+import java.io.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.tinyshellzz.kikiwhitelist.ObjectPool.plugin;
-import static java.util.Map.entry;
 
 public class GiftList {
     static  List<List<String>> rewords = new ArrayList<>();
@@ -25,7 +25,10 @@ public class GiftList {
             rewords.add(new ArrayList<>());
         }
     }
-    private static ConfigWrapper configWrapper = new ConfigWrapper(plugin, "rewords.yml");
+    private static ConfigWrapper configWrapper = new ConfigWrapper(plugin, "sign_in/rewords.yml");
+    static {
+        plugin.saveResource("sign_in/giftlist.txt", false);
+    }
 
     /**
      * 依据日期获取礼物
@@ -38,7 +41,7 @@ public class GiftList {
 
         List<String> rews = rewords.get(day);
         for(String item: rews) {
-            int amount = 0;
+            int amount = 1;
             Pattern r = Pattern.compile("^(.*)[xX]([0-9]{1,2})$");
             Matcher m = r.matcher(item);
             if(m.find()){
@@ -53,7 +56,14 @@ public class GiftList {
                 continue;
             }
 
-            Material material = itemList.get(item.toUpperCase());
+            Material material = null;
+            try {
+                Object o = Material.class.getField(item.toUpperCase()).get(null);
+                if(o instanceof Material) {
+                    material = (Material) o;
+                }
+            } catch (IllegalAccessException | NoSuchFieldException e) {
+            }
             if(material != null) {
                 gifts.add(new ItemStack(material, amount));
                 continue;
@@ -73,11 +83,19 @@ public class GiftList {
         Bukkit.getConsoleSender().sendMessage("=================getRandomGift====================");
         Random rand = new Random();
 
+        Set<String> strings = itemList.keySet();
         // Obtain a number between [0 - keys.size()-1].
-        int n = rand.nextInt(keys.size());
+        int n = rand.nextInt(itemKeys.size() + customItemKeys.size());
 
-        Material m = itemList.get(keys.get(n));
-        return new ItemStack(m);
+        ItemStack item;
+        if(n < itemKeys.size()) {
+            Material m = itemList.get(itemKeys.get(n));
+            item = new ItemStack(m);
+        } else {
+            item = ItemStackManager.getItem(customItemKeys.get(n-itemKeys.size()));
+        }
+
+        return item;
     }
 
     public static void reload() {
@@ -98,45 +116,47 @@ public class GiftList {
                 }
             }
         }
+
+
+        Set<String> giftlist = new HashSet<>();;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(new File(plugin.getDataFolder(), "sign_in/giftlist.txt")))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                giftlist.add(line.strip().toUpperCase());
+            }
+        } catch (IOException e) {
+        }
+
+
+        itemList = new HashMap<>();
+        Field[] declaredFields = Material.class.getDeclaredFields();
+        for(Field field: declaredFields) {
+            if(Modifier.isPublic(field.getModifiers()) && Modifier.isStatic(field.getModifiers())) {
+                try {
+                    Object o = field.get(null);     // 获取静态属性
+                    String field_name = field.getName();
+                    boolean gift_blacklist = ObjectPool.pluginConfig.gift_blacklist;
+                    if((gift_blacklist && !giftlist.contains(field_name)) || (!gift_blacklist && giftlist.contains(field_name))) {
+                        if (o instanceof Material && !field_name.startsWith("LEGACY_")) {
+                            Material material = (Material) o;
+                            itemList.put(field_name, material);
+                        }
+                    }
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+
+        itemKeys = new ArrayList<>();
+        itemKeys.addAll(itemList.keySet());
+        customItemKeys = new ArrayList<>();
+        customItemKeys.addAll(ItemStackManager.itemMap.keySet());
     }
 
     private static HashMap<String, Material> itemList;
-    private static List<String> keys = new ArrayList<>();
-    static {
-        itemList = new HashMap<>();
-        itemList.put("ANVIL", Material.ANVIL);
-        itemList.put("APPLE", Material.APPLE);
-        itemList.put("ARROW", Material.ARROW);
-        itemList.put("BAMBOO", Material.BAMBOO);
-        itemList.put("BARREL", Material.BARREL);
-        itemList.put("BEACON", Material.BEACON);
-        itemList.put("BEEF", Material.BEEF);
-        itemList.put("BEE_NEST", Material.BEE_NEST);
-        itemList.put("BELL", Material.BELL);
-        itemList.put("BIRCH_LOG", Material.BIRCH_LOG);
-        itemList.put("BOOK", Material.BOOK);
-        itemList.put("BOOKSHELF", Material.BOOKSHELF);
-        itemList.put("BOW", Material.BOW);
-        itemList.put("BOWL", Material.BOWL);
-        itemList.put("BUCKET", Material.BUCKET);
-        itemList.put("CAKE", Material.CAKE);
-        itemList.put("CHEST", Material.CHEST);
-        itemList.put("CLAY", Material.CLAY);
-        itemList.put("CLOCK", Material.CLOCK);
-        itemList.put("COMPASS", Material.COMPASS);
-        itemList.put("POTATO", Material.POTATO);
+    private static List<String> itemKeys;
 
-        // 有价值的物品
-        itemList.put("DIAMOND", Material.DIAMOND);
-        itemList.put("DIAMOND_ORE", Material.DIAMOND_ORE);
-        itemList.put("ELYTRA", Material.ELYTRA);
-        // 下届合金
-        itemList.put("ANCIENT_DEBRIS", Material.ANCIENT_DEBRIS);
-        itemList.put("NETHERITE_BLOCK", Material.NETHERITE_BLOCK);
-        itemList.put("NETHERITE_SCRAP", Material.NETHERITE_SCRAP);
-        itemList.put("NETHERITE_INGOT", Material.NETHERITE_INGOT);
-
-
-        keys.addAll(itemList.keySet());
-    }
+    private static List<String> customItemKeys;
 }
