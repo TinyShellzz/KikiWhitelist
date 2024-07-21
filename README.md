@@ -7,9 +7,9 @@
 
 ## ban and unban, 只有控制台和op能使用
 ```
-/ban <playerName> <reason>
-/ban <playerName> <time> <reason>
-/unban <playerName>
+/iban <playerName> <reason>
+/iban <playerName> <time> <reason>
+/iunban <playerName>
 ```
 
 ## 签到
