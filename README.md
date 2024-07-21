@@ -17,7 +17,7 @@
 /sign <code>
 ```
 
-## 保存奖励(物品所有物品), 需要 kiki.use 权限
+## 保存奖励(身上所有物品), 需要 kiki.use 权限
 ```
 day 是一个月中的天数
 /rewards save <day>
