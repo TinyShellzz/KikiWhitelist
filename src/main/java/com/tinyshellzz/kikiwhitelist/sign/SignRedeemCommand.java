@@ -52,7 +52,16 @@ public class SignRedeemCommand implements TabExecutor {
             for(ItemStack gift: gifts) {
                 Bukkit.getConsoleSender().sendMessage(gift.toString());
                 player.getInventory().addItem(gift);
-                msg.append(gift.getType().name() + "X" + gift.getAmount());
+                String name = gift.getItemMeta().getDisplayName();
+                if(name == null || name.equals("")) {
+                    name = gift.getItemMeta().getItemName();
+                }
+                if(name == null || name.equals("")) {
+                    name = gift.getType().toString();
+                }
+
+
+                msg.append(name + "X" + gift.getAmount());
                 msg.append(", ");
             }
             msg.setLength(msg.length() - 2);
