@@ -21,6 +21,7 @@ commands:
     description: daly sign in redeem command
     usage: /redeem <code>
     default: true
+    permission: redeem.use
   rewards:
     description: daly sign in command rewards
     usage: /rewards save <day>

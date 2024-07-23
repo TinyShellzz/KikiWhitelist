@@ -1,6 +1,7 @@
 package com.tinyshellzz.kikiwhitelist.sign;
 
 import com.tinyshellzz.kikiwhitelist.database.MCUser;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -46,16 +47,20 @@ public class SignRedeemCommand implements TabExecutor {
             int day = Integer.decode(m.group(1));
             List<ItemStack> gifts = GiftList.getGift(day);
 
+            StringBuilder msg = new StringBuilder(ChatColor.GREEN + "领取成功, 获得: ");
             // 依据日期给予玩家礼物
             for(ItemStack gift: gifts) {
                 Bukkit.getConsoleSender().sendMessage(gift.toString());
                 player.getInventory().addItem(gift);
+                msg.append(gift.getItemMeta().getDisplayName() + "X" + gift.getAmount());
+                msg.append(", ");
             }
+            msg.setLength(msg.length() - 2);
 
             signMapper.set_redeemed(sign_user.qq_num, code);
-            sender.sendMessage("领取成功");
+            sender.sendMessage(msg.toString());
         } else {
-            sender.sendMessage("验证码错误");
+            sender.sendMessage(ChatColor.RED + "验证码错误");
         }
 
         return true;
