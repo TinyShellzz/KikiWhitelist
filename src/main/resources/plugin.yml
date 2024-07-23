@@ -17,9 +17,9 @@ commands:
     description: KikiWhitelist iunban command
     usage: /iunban <name>
     default: true
-  sign:
-    description: daly sign in command
-    usage: /sign <code>
+  redeem:
+    description: daly sign in redeem command
+    usage: /redeem <code>
     default: true
   rewards:
     description: daly sign in command rewards

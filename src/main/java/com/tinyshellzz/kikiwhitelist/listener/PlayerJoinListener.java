@@ -12,8 +12,8 @@ import org.bukkit.inventory.ItemStack;
 public class PlayerJoinListener implements Listener {
     @EventHandler
     public void handle(PlayerJoinEvent event) {
-        ItemStack tcc_server = ItemStackManager.getItem("tcc_server");
+//        ItemStack tcc_server = ItemStackManager.getItem("tcc_server");
 //        Bukkit.getConsoleSender().sendMessage("item: " + tcc_server.toString());
-        event.getPlayer().getInventory().addItem(tcc_server);
+//        event.getPlayer().getInventory().addItem(tcc_server);
     }
 }

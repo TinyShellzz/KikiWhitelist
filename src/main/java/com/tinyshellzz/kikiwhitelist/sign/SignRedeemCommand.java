@@ -1,7 +1,5 @@
 package com.tinyshellzz.kikiwhitelist.sign;
 
-import com.tinyshellzz.kikiwhitelist.config.ItemStackManager;
-import com.tinyshellzz.kikiwhitelist.database.CodeMCMapper;
 import com.tinyshellzz.kikiwhitelist.database.MCUser;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -18,7 +16,7 @@ import java.util.regex.Pattern;
 
 import static com.tinyshellzz.kikiwhitelist.ObjectPool.*;
 
-public class SignCommand implements TabExecutor {
+public class SignRedeemCommand implements TabExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Bukkit.getConsoleSender().sendMessage("==================sign command===================");

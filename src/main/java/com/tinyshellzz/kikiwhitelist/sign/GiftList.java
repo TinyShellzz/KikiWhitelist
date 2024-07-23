@@ -176,7 +176,9 @@ public class GiftList {
     }
 
     private static HashMap<String, Material> itemList;
-    private static List<String> itemKeys;
 
+    // 用于随机物品
+    private static List<String> itemKeys;
+    // 用于随机物品
     private static List<String> customItemKeys;
 }

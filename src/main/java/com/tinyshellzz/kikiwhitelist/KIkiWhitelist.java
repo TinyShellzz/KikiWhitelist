@@ -3,7 +3,6 @@ package com.tinyshellzz.kikiwhitelist;
 import com.tinyshellzz.kikiwhitelist.command.IbanCommand;
 import com.tinyshellzz.kikiwhitelist.command.IunbanCommand;
 import com.tinyshellzz.kikiwhitelist.command.KikiCommand;
-import com.tinyshellzz.kikiwhitelist.config.DBConfig;
 import com.tinyshellzz.kikiwhitelist.config.PluginConfig;
 import com.tinyshellzz.kikiwhitelist.database.BanlistMapper;
 import com.tinyshellzz.kikiwhitelist.database.CodeMCMapper;
@@ -13,7 +12,7 @@ import com.tinyshellzz.kikiwhitelist.listener.PlayerJoinListener;
 import com.tinyshellzz.kikiwhitelist.listener.PlayerLoginListener;
 import com.tinyshellzz.kikiwhitelist.listener.PlayerQuitListener;
 import com.tinyshellzz.kikiwhitelist.sign.RewardsCommand;
-import com.tinyshellzz.kikiwhitelist.sign.SignCommand;
+import com.tinyshellzz.kikiwhitelist.sign.SignRedeemCommand;
 import com.tinyshellzz.kikiwhitelist.sign.SignMapper;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -64,7 +63,7 @@ public final class KIkiWhitelist extends JavaPlugin {
         this.getCommand("iban").setExecutor(new IbanCommand(this));
         // 注册 iunban 命令
         this.getCommand("iunban").setExecutor(new IunbanCommand(this));
-        this.getCommand("sign").setExecutor(new SignCommand());
+        this.getCommand("redeem").setExecutor(new SignRedeemCommand());
         this.getCommand("rewards").setExecutor(new RewardsCommand());
     }
 }
