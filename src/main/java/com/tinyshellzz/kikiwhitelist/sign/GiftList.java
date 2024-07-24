@@ -28,6 +28,7 @@ public class GiftList {
         }
     }
     public static ConfigWrapper configWrapper = new ConfigWrapper(plugin, "sign_in/rewords.yml");
+    public static ConfigWrapper oddsWrapper = new ConfigWrapper(plugin, "sign_in/odds.yml");
     static {
         plugin.saveResource("sign_in/giftlist.txt", false);
     }
@@ -172,6 +173,27 @@ public class GiftList {
         for(String k: strings) {
             Matcher m = r.matcher(k);
             if(!m.find()) customItemKeys.add(k);
+        }
+
+
+        YamlConfiguration configOdds = oddsWrapper.getConfig();
+        Set<String> keySet = configOdds.getKeys(false);
+        int itemAmount = itemKeys.size() + customItemKeys.size() - keySet.size();
+        HashMap<String, Double> oddsMap = new HashMap<>();
+        double odds_sum = 0;
+        for (String itemKey : keySet) {
+            String odds = config.getString(itemKey);
+            double odds_val = Double.parseDouble(odds.substring(0, odds.length()-1))*0.01;
+            oddsMap.put(itemKey, odds_val);
+            odds_sum += odds_val;
+        }
+
+        double totalAmount = itemAmount/(1-odds_sum);
+        for (String itemKey : keySet) {
+            int thisItemAmount = (int)(totalAmount*oddsMap.get(itemKey));
+            for(int i = 0; i < thisItemAmount-1; i++) {
+                itemKeys.add(itemKey);
+            }
         }
     }
 
