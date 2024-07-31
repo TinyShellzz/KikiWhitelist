@@ -182,7 +182,7 @@ public class GiftList {
         HashMap<String, Double> oddsMap = new HashMap<>();
         double odds_sum = 0;
         for (String itemKey : keySet) {
-            String odds = config.getString(itemKey);
+            String odds = configOdds.getString(itemKey);
             double odds_val = Double.parseDouble(odds.substring(0, odds.length()-1))*0.01;
             oddsMap.put(itemKey, odds_val);
             odds_sum += odds_val;
@@ -190,7 +190,7 @@ public class GiftList {
 
         double totalAmount = itemAmount/(1-odds_sum);
         for (String itemKey : keySet) {
-            int thisItemAmount = (int)(totalAmount*oddsMap.get(itemKey));
+            int thisItemAmount = (int)(totalAmount*oddsMap.get(itemKey) + 1);
             for(int i = 0; i < thisItemAmount-1; i++) {
                 itemKeys.add(itemKey);
             }
