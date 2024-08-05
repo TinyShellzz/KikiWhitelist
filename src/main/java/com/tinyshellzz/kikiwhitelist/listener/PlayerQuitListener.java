@@ -11,7 +11,7 @@ public class PlayerQuitListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerQuit(PlayerQuitEvent event) {
         String mc_uuid = event.getPlayer().getUniqueId().toString().replace("-", "");
-        String user_name = event.getPlayer().getDisplayName();
+        String user_name = event.getPlayer().getName();
 
         if(userMCMapper.exists_uuid(mc_uuid)) {
             userMCMapper.update_user_name_by_uuid(mc_uuid, user_name, user_name);

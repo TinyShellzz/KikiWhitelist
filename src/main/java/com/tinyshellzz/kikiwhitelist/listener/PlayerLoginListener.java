@@ -32,7 +32,7 @@ public class PlayerLoginListener implements Listener {
     public void onPlayerLogin(PlayerLoginEvent event) {
         boolean whitelisted = false;
         String mc_uuid = event.getPlayer().getUniqueId().toString().replace("-", "");
-        String user_name = event.getPlayer().getDisplayName();
+        String user_name = event.getPlayer().getName();
         if(banlistMapper.exists_uuid(mc_uuid)) {
             BanlistUser b_user = banlistMapper.get_user_by_uuid(mc_uuid);
             LocalDateTime now = LocalDateTime.now();

@@ -103,8 +103,8 @@ public class IbanCommand  implements TabExecutor {
             OfflinePlayer[] offlinePlayers = Bukkit.getServer().getOfflinePlayers();
             for(OfflinePlayer _p : offlinePlayers) {
                 Player p = _p.getPlayer();
-                if(p.getDisplayName().toLowerCase().equals(player)) {
-                    user_name = p.getDisplayName();
+                if(p.getName().toLowerCase().equals(player)) {
+                    user_name = p.getName();
                     mc_uuid = p.getUniqueId().toString().replace("-", "");
                 }
             }
