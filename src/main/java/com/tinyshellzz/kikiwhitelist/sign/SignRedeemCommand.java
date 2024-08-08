@@ -44,7 +44,7 @@ public class SignRedeemCommand implements TabExecutor {
             m.find();
 
             Bukkit.getConsoleSender().sendMessage("礼物日期: " + m.group(1));
-            int day = Integer.decode(m.group(1));
+            int day = Integer.parseInt(m.group(1));
             List<ItemStack> gifts = GiftList.getGift(day);
 
             StringBuilder msg = new StringBuilder(ChatColor.GREEN + "领取成功, 获得: ");

@@ -1,5 +1,5 @@
 import java.text.SimpleDateFormat
-version = "2.1.3"
+version = "2.1.4"
 
 plugins {
     `java-library`
@@ -36,6 +36,7 @@ dependencies {
     compileOnly("me.clip:placeholderapi:2.11.1")
     implementation("net.kyori:adventure-api:4.17.0")
     implementation("net.kyori:adventure-text-minimessage:4.17.0")
+    implementation("com.mysql:mysql-connector-j:8.4.0")
 }
 
 group = "com.tinyshellzz.permissionManager"
