@@ -28,7 +28,11 @@ public class PlayerLoginListener implements Listener {
 
     private UserMCMapper userMCMapper = ObjectPool.userMCMapper;
 
-    @EventHandler(priority = EventPriority.LOWEST)
+    /**
+     * 最先处理这个事件
+     * @param event
+     */
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerLogin(PlayerLoginEvent event) {
         boolean whitelisted = false;
         String mc_uuid = event.getPlayer().getUniqueId().toString().replace("-", "");

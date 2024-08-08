@@ -1,11 +1,13 @@
 package com.tinyshellzz.kikiwhitelist.sign;
 
 import com.tinyshellzz.kikiwhitelist.database.MCUser;
+import com.tinyshellzz.kikiwhitelist.utils.BukkitTools;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -51,7 +53,12 @@ public class SignRedeemCommand implements TabExecutor {
             // 依据日期给予玩家礼物
             for(ItemStack gift: gifts) {
                 Bukkit.getConsoleSender().sendMessage(gift.toString());
-                player.getInventory().addItem(gift);
+                if(!BukkitTools.is_inventory_full(player.getInventory())) {
+                    player.getInventory().addItem(gift);
+                } else {    // 玩家物品栏没有空位，就生成物品
+                    Item itemDropped  = player.getWorld().dropItemNaturally(player.getLocation(), gift);
+                    itemDropped.setPickupDelay(10);
+                }
                 String name = gift.getItemMeta().getDisplayName();
                 if(name == null || name.equals("")) {
                     name = gift.getItemMeta().getItemName();
